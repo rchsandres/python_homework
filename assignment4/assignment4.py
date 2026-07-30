@@ -107,8 +107,8 @@ print(clean_data)
 print()
 assert clean_data["Hire Date"].isna().sum() == 0
 
-clean_data["Name"] = clean_data["Name"].str.strip().str.upper()
+clean_data["Name"] = clean_data["Name"].str.strip()
 clean_data["Department"] = clean_data["Department"].str.strip().str.upper()
-print("Task 4.7 - clean_data (Name and Department cleaned):")
+print("Task 4.7 - clean_data (Name stripped, Department cleaned and uppercased):")
 print(clean_data)
 print()
