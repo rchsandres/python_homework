@@ -18,6 +18,7 @@ print("Task 1.2 - task1_with_salary:")
 print(task1_with_salary)
 print()
 
+
 task1_older = task1_with_salary.copy()
 task1_older["Age"] = task1_older["Age"] + 1
 print("Task 1.3 - task1_older:")
@@ -77,12 +78,13 @@ print(clean_data)
 print()
 
 clean_data["Age"] = pd.to_numeric(clean_data["Age"], errors="coerce")
-print("Task 4.3 - clean_data (Age converted to numeric):")
+clean_data["Age"] = clean_data["Age"].fillna(clean_data["Age"].mean())
+print("Task 4.3 - clean_data (Age converted to numeric, missing values handled):")
 print(clean_data)
 print()
 
 clean_data["Salary"] = clean_data["Salary"].replace(
-    ["unknown", "n/a", "N/A", "Unknown", "NA", "na"], np.nan
+    ["unknown", "n/a", "N/A", "Unknown", "NA", "na", "UNKNOWN"], np.nan
 )
 clean_data["Salary"] = pd.to_numeric(clean_data["Salary"], errors="coerce")
 print("Task 4.4 - clean_data (Salary converted to numeric, placeholders as NaN):")
@@ -94,11 +96,16 @@ clean_data["Salary"] = clean_data["Salary"].fillna(clean_data["Salary"].median()
 print("Task 4.5 - clean_data (missing numeric values filled):")
 print(clean_data)
 print()
+assert clean_data["Age"].isna().sum() == 0
+assert clean_data["Salary"].isna().sum() == 0
 
-clean_data["Hire Date"] = pd.to_datetime(clean_data["Hire Date"], errors="coerce")
+clean_data["Hire Date"] = pd.to_datetime(
+    clean_data["Hire Date"], format="mixed", errors="coerce"
+)
 print("Task 4.6 - clean_data (Hire Date converted to datetime):")
 print(clean_data)
 print()
+assert clean_data["Hire Date"].isna().sum() == 0
 
 clean_data["Name"] = clean_data["Name"].str.strip().str.upper()
 clean_data["Department"] = clean_data["Department"].str.strip().str.upper()
