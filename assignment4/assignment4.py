@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-employee_dict = {
+mployee_dict = {
     "Name": ["Alice", "Bob", "Charlie"],
     "Age": [25, 30, 35],
     "City": ["New York", "Los Angeles", "Chicago"],
@@ -17,7 +17,6 @@ task1_with_salary["Salary"] = [70000, 80000, 90000]
 print("Task 1.2 - task1_with_salary:")
 print(task1_with_salary)
 print()
-
 
 task1_older = task1_with_salary.copy()
 task1_older["Age"] = task1_older["Age"] + 1
@@ -65,27 +64,32 @@ print("Task 3.4 - more_employees.info():")
 more_employees.info()
 print()
 
-dirty_data = pd.read_csv("dirty_data.csv")
+dirty_data = pd.read_csv("/mnt/user-data/uploads/dirty_data.csv")
 print("Task 4.1 - dirty_data:")
 print(dirty_data)
+print()
+print("dtypes:")
+print(dirty_data.dtypes)
 print()
 
 clean_data = dirty_data.copy()
 
-clean_data = clean_data.drop_duplicates()
+for col in clean_data.select_dtypes(include="object").columns:
+    clean_data[col] = clean_data[col].str.strip()
+
+clean_data = clean_data.drop_duplicates().reset_index(drop=True)
 print("Task 4.2 - clean_data (duplicates removed):")
 print(clean_data)
+print(f"Shape after dedup: {clean_data.shape}")
 print()
 
 clean_data["Age"] = pd.to_numeric(clean_data["Age"], errors="coerce")
-clean_data["Age"] = clean_data["Age"].fillna(clean_data["Age"].mean())
-print("Task 4.3 - clean_data (Age converted to numeric, missing values handled):")
+print("Task 4.3 - clean_data (Age converted to numeric):")
 print(clean_data)
 print()
 
-clean_data["Salary"] = clean_data["Salary"].replace(
-    ["unknown", "n/a", "N/A", "Unknown", "NA", "na", "UNKNOWN"], np.nan
-)
+placeholders = ["unknown", "n/a", "N/A", "Unknown", "NA", "na", "UNKNOWN"]
+clean_data["Salary"] = clean_data["Salary"].replace(placeholders, np.nan)
 clean_data["Salary"] = pd.to_numeric(clean_data["Salary"], errors="coerce")
 print("Task 4.4 - clean_data (Salary converted to numeric, placeholders as NaN):")
 print(clean_data)
@@ -99,6 +103,7 @@ print()
 assert clean_data["Age"].isna().sum() == 0
 assert clean_data["Salary"].isna().sum() == 0
 
+clean_data["Hire Date"] = clean_data["Hire Date"].str.strip()
 clean_data["Hire Date"] = pd.to_datetime(
     clean_data["Hire Date"], format="mixed", errors="coerce"
 )
